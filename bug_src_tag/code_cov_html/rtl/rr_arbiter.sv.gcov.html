@@ -1,0 +1,125 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - merged.info - rtl/rr_arbiter.sv</title>
+  <link rel="stylesheet" type="text/css" href="../gcov.css">
+</head>
+
+<body>
+
+          <table width="100%" border=0 cellspacing=0 cellpadding=0>
+            <tr><td class="title">LCOV - code coverage report</td></tr>
+            <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+
+            <tr>
+              <td width="100%">
+                <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="10%" class="headerValue"><a href="../index.html" title="Click to go to top-level">top level</a> - <a href="index.html" title="Click to go to directory rtl">rtl</a> - rr_arbiter.sv</td>
+            <td width="5%"></td>
+            <td width="5%"></td>
+            <td width="5%" class="headerCovTableHead">Coverage</td>
+            <td width="5%" class="headerCovTableHead" title="Covered + Uncovered code">Total</td>
+            <td width="5%" class="headerCovTableHead" title="Exercised code only">Hit</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">merged.info</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntryHi">100.0&nbsp;%</td>
+            <td class="headerCovTableEntry">26</td>
+            <td class="headerCovTableEntry">26</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test Date:</td>
+            <td class="headerValue">2026-11-11 07:05:41</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntryHi">-</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">0</td>
+          </tr>
+                  <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+                </table>
+              </td>
+            </tr>
+
+            <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+          </table>
+
+          <table cellpadding=0 cellspacing=0 border=0>
+            <tr>
+              <td><br></td>
+            </tr>
+            <tr>
+              <td>
+<pre class="sourceHeading">            Line data    Source code</pre>
+<pre class="source">
+<span id="L1"><span class="lineNum">       1</span>              : // rr_arbiter.sv -- N-way round-robin arbiter with a rotating priority pointer.</span>
+<span id="L2"><span class="lineNum">       2</span>              : // Search starts at ptr; after granting input k the pointer moves to k+1 (R-DUT-07).</span>
+<span id="L3"><span class="lineNum">       3</span>              : // N must be a power of two so the index arithmetic wraps naturally.</span>
+<span id="L4"><span class="lineNum">       4</span>              : module rr_arbiter #(</span>
+<span id="L5"><span class="lineNum">       5</span>              :   parameter int N = 4,</span>
+<span id="L6"><span class="lineNum">       6</span>              :   localparam int W = $clog2(N)</span>
+<span id="L7"><span class="lineNum">       7</span>              : ) (</span>
+<span id="L8"><span class="lineNum">       8</span> <span class="tlaGNC">     4036888 :   input  logic         clk,</span></span>
+<span id="L9"><span class="lineNum">       9</span> <span class="tlaGNC">          88 :   input  logic         rst_n,</span></span>
+<span id="L10"><span class="lineNum">      10</span> <span class="tlaGNC">       17006 :   input  logic [N-1:0] req,</span></span>
+<span id="L11"><span class="lineNum">      11</span> <span class="tlaGNC">       67990 :   input  logic         en,          // output is idle and may take a new grant</span></span>
+<span id="L12"><span class="lineNum">      12</span> <span class="tlaGNC">       17006 :   output logic [N-1:0] gnt,         // one-hot or zero</span></span>
+<span id="L13"><span class="lineNum">      13</span> <span class="tlaGNC">       32752 :   output logic [W-1:0] gnt_idx,</span></span>
+<span id="L14"><span class="lineNum">      14</span> <span class="tlaGNC">       67990 :   output logic         gnt_valid,</span></span>
+<span id="L15"><span class="lineNum">      15</span> <span class="tlaGNC">       18486 :   output logic [W-1:0] ptr</span></span>
+<span id="L16"><span class="lineNum">      16</span>              : );</span>
+<span id="L17"><span class="lineNum">      17</span>              : </span>
+<span id="L18"><span class="lineNum">      18</span> <span class="tlaGNC">       45940 :   logic         found;</span></span>
+<span id="L19"><span class="lineNum">      19</span> <span class="tlaGNC">       18486 :   logic [W-1:0] cand;</span></span>
+<span id="L20"><span class="lineNum">      20</span>              : </span>
+<span id="L21"><span class="lineNum">      21</span> <span class="tlaGNC">     2018488 :   always_comb begin</span></span>
+<span id="L22"><span class="lineNum">      22</span> <span class="tlaGNC">     2018488 :     found   = 1'b0;</span></span>
+<span id="L23"><span class="lineNum">      23</span> <span class="tlaGNC">     2018488 :     gnt_idx = '0;</span></span>
+<span id="L24"><span class="lineNum">      24</span> <span class="tlaGNC">     2018488 :     cand    = '0;</span></span>
+<span id="L25"><span class="lineNum">      25</span> <span class="tlaGNC">     8073952 :     for (int k = 0; k &lt; N; k++) begin</span></span>
+<span id="L26"><span class="lineNum">      26</span> <span class="tlaGNC">     8073952 :       cand = ptr + W'(k);</span></span>
+<span id="L27"><span class="lineNum">      27</span> <span class="tlaGNC">     7596325 :       if (!found &amp;&amp; req[cand]) begin</span></span>
+<span id="L28"><span class="lineNum">      28</span> <span class="tlaGNC">      477627 :         found   = 1'b1;</span></span>
+<span id="L29"><span class="lineNum">      29</span> <span class="tlaGNC">      477627 :         gnt_idx = cand;</span></span>
+<span id="L30"><span class="lineNum">      30</span>              :       end</span>
+<span id="L31"><span class="lineNum">      31</span>              :     end</span>
+<span id="L32"><span class="lineNum">      32</span> <span class="tlaGNC">     2018488 :     gnt_valid = en &amp;&amp; found;</span></span>
+<span id="L33"><span class="lineNum">      33</span> <span class="tlaGNC">     2018488 :     gnt       = gnt_valid ? (N'(1) &lt;&lt; gnt_idx) : '0;</span></span>
+<span id="L34"><span class="lineNum">      34</span>              :   end</span>
+<span id="L35"><span class="lineNum">      35</span>              : </span>
+<span id="L36"><span class="lineNum">      36</span> <span class="tlaGNC">     2018488 :   always_ff @(posedge clk or negedge rst_n) begin</span></span>
+<span id="L37"><span class="lineNum">      37</span> <span class="tlaGNC">         352 :     if (!rst_n) begin</span></span>
+<span id="L38"><span class="lineNum">      38</span> <span class="tlaGNC">         352 :       ptr &lt;= '0;</span></span>
+<span id="L39"><span class="lineNum">      39</span>              : `ifdef BUG_ARB_NO_ROTATE</span>
+<span id="L40"><span class="lineNum">      40</span>              :     end else if (gnt_valid &amp;&amp; 1'b0) begin   // injected bug: pointer never rotates</span>
+<span id="L41"><span class="lineNum">      41</span>              :       ptr &lt;= gnt_idx + 1'b1;</span>
+<span id="L42"><span class="lineNum">      42</span>              : `else</span>
+<span id="L43"><span class="lineNum">      43</span> <span class="tlaGNC">     1984141 :     end else if (gnt_valid) begin</span></span>
+<span id="L44"><span class="lineNum">      44</span> <span class="tlaGNC">       33995 :       ptr &lt;= gnt_idx + 1'b1;</span></span>
+<span id="L45"><span class="lineNum">      45</span>              : `endif</span>
+<span id="L46"><span class="lineNum">      46</span>              :     end</span>
+<span id="L47"><span class="lineNum">      47</span>              :   end</span>
+<span id="L48"><span class="lineNum">      48</span>              : </span>
+<span id="L49"><span class="lineNum">      49</span>              : endmodule</span>
+        </pre>
+              </td>
+            </tr>
+          </table>
+          <br>
+
+          <table width="100%" border=0 cellspacing=0 cellpadding=0>
+            <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+            <tr><td class="versionInfo">Generated by: <a href="https://github.com//linux-test-project/lcov" target="_parent">LCOV version 2.0-1</a></td></tr>
+          </table>
+          <br>
+
+</body>
+</html>
