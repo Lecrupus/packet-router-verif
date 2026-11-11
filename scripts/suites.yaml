@@ -1,0 +1,36 @@
+# Regression suites: test -> number of seeds. Seeds are derived from the master seed,
+# so the job list itself reproduces (R-PY-05).
+master_seed: 20261111
+
+suites:
+  # 1 seed per test (11 runs): before every commit, < 2 minutes (R-TP-02)
+  quick:
+    smoke_test: 1
+    random_test: 1
+    hotspot_test: 1
+    permutation_test: 1
+    max_burst_test: 1
+    min_len_test: 1
+    error_test: 1
+    backpressure_test: 1
+    bad_while_full_test: 1
+    mixed_test: 1
+    soak_test: 1
+
+  # ~525 runs (spec section 9), plus the directed counter-wrap test
+  full:
+    smoke_test: 1
+    random_test: 200
+    hotspot_test: 50
+    permutation_test: 20
+    max_burst_test: 30
+    min_len_test: 20
+    error_test: 50
+    backpressure_test: 30
+    bad_while_full_test: 20
+    mixed_test: 100
+    soak_test: 5
+    counter_wrap_test: 1
+
+# Fixed seeds kept forever: every bug a random seed found gets one here (R-TP-04)
+fixed_seeds: {}

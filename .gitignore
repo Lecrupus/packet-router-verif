@@ -1,0 +1,11 @@
+out/
+obj_dir/
+obj_dir_*/
+__pycache__/
+.pytest_cache/
+*.vcd
+*.fst
+.impeccable/hook.cache.json
+.impeccable/review/
+.claude/
+.impeccable/mocks/
