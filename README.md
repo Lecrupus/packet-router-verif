@@ -215,7 +215,7 @@ contribution and the requirement-to-check traceability table.
 
 ## Results
 
-Full regression, `make full` (`out/full/`), master seed 20261111, 16 workers on WSL2
+Full regression, `make full` (`out/full/`, published as the live dashboard, commit `086ac5e`), master seed 20261111, 16 workers on WSL2
 Ubuntu 26.04, Verilator 5.032:
 
 | Metric | Result | Sign-off target |
@@ -226,7 +226,7 @@ Ubuntu 26.04, Verilator 5.032:
 | Line coverage | **100%** (119/119 points; 4 waived: the unreachable FSM `default:` arm × 4 instances) | ≥ 95% |
 | Toggle coverage | **100%** (2,022/2,022 points, none waived) | ≥ 90% |
 | Expression coverage | **n/a**: Verilator 5.032 has no `--coverage-expr` | ≥ 85% |
-| Simulation wall time | 17.9 s for 527 runs (coverage merge + dashboard add ~40 s) | — |
+| Simulation wall time | 18–28 s for 527 runs across runs on this laptop (published run: 27.5 s; coverage merge + dashboard add ~40 s) | — |
 | Quick suite (`make quick`) | 11 runs, 2–3.5 s of simulation, ~6 s end to end when the build is up to date (a clean compile adds 45–90 s) | < 2 min |
 | Reproducibility | same seed + binary → byte-identical log; same suite + master seed → identical job list, results and merged coverage | R-TB-02, R-PY-05 |
 
