@@ -1,0 +1,377 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-11T00:00:00Z",
+  "title": "Design System: packet-router-verif regression sheet",
+  "extensions": {
+    "colorMeta": {
+      "whiteprint": {
+        "role": "neutral",
+        "displayName": "Whiteprint",
+        "canonical": "oklch(95.5% 0.004 157)",
+        "cssVar": "--ground",
+        "tonalRamp": [
+          "#0b0b0b",
+          "#242524",
+          "#404341",
+          "#5f6260",
+          "#808381",
+          "#a3a6a4",
+          "#c8cac8",
+          "#edefee"
+        ]
+      },
+      "whiteprint-band": {
+        "role": "neutral",
+        "displayName": "Ruled Band",
+        "canonical": "oklch(93.0% 0.006 170)",
+        "cssVar": "--ground-2",
+        "tonalRamp": [
+          "#0a0b0b",
+          "#232625",
+          "#3f4341",
+          "#5e6261",
+          "#7f8382",
+          "#a2a6a4",
+          "#c7cac9",
+          "#edefee"
+        ]
+      },
+      "blueline": {
+        "role": "primary",
+        "displayName": "Blueline Ink",
+        "canonical": "oklch(37.9% 0.137 266)",
+        "cssVar": "--blue",
+        "tonalRamp": [
+          "#030822",
+          "#102051",
+          "#223b84",
+          "#3c5bae",
+          "#5b7ed4",
+          "#7fa2f4",
+          "#adc8ff",
+          "#ddefff"
+        ]
+      },
+      "blueline-hair": {
+        "role": "neutral",
+        "displayName": "Blueline Hairline",
+        "canonical": "oklch(75.5% 0.049 262)",
+        "cssVar": "--blue-soft",
+        "tonalRamp": [
+          "#070b14",
+          "#1d2535",
+          "#35425a",
+          "#52627d",
+          "#7383a0",
+          "#96a6c2",
+          "#becadf",
+          "#e7effc"
+        ]
+      },
+      "blueline-wash": {
+        "role": "neutral",
+        "displayName": "Blueline Wash",
+        "canonical": "oklch(89.9% 0.018 261)",
+        "cssVar": "--blue-wash",
+        "tonalRamp": [
+          "#090b0e",
+          "#22252b",
+          "#3d424b",
+          "#5c626c",
+          "#7c838e",
+          "#9fa5b0",
+          "#c5c9d1",
+          "#eceff4"
+        ]
+      },
+      "drafting-ink": {
+        "role": "neutral",
+        "displayName": "Drafting Ink",
+        "canonical": "oklch(22.5% 0.050 263)",
+        "cssVar": "--ink",
+        "tonalRamp": [
+          "#070b14",
+          "#1c2535",
+          "#35425b",
+          "#52617e",
+          "#7383a1",
+          "#96a6c3",
+          "#becae0",
+          "#e7effd"
+        ]
+      },
+      "drafting-ink-soft": {
+        "role": "neutral",
+        "displayName": "Soft Drafting Ink",
+        "canonical": "oklch(41.0% 0.054 265)",
+        "cssVar": "--ink-2",
+        "tonalRamp": [
+          "#070b15",
+          "#1c2537",
+          "#35425d",
+          "#526180",
+          "#7382a3",
+          "#96a5c5",
+          "#bec9e1",
+          "#e7effe"
+        ]
+      },
+      "redline": {
+        "role": "secondary",
+        "displayName": "Redline",
+        "canonical": "oklch(50.7% 0.175 27)",
+        "cssVar": "--red",
+        "tonalRamp": [
+          "#220000",
+          "#500000",
+          "#830003",
+          "#af2422",
+          "#d74d44",
+          "#fa786c",
+          "#ffab9f",
+          "#ffddd4"
+        ]
+      },
+      "release-green": {
+        "role": "tertiary",
+        "displayName": "Release Green",
+        "canonical": "oklch(49.2% 0.097 155)",
+        "cssVar": "--green",
+        "tonalRamp": [
+          "#001004",
+          "#012e16",
+          "#084f2c",
+          "#2a7148",
+          "#4e9468",
+          "#76b68c",
+          "#a9d6b7",
+          "#dbf7e3"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Sheet Title",
+        "purpose": "The sheet title only; uppercase, 80% width."
+      },
+      "headline": {
+        "displayName": "Zone Heading",
+        "purpose": "Zone headings and the title-block title; uppercase."
+      },
+      "title": {
+        "displayName": "Sub-head",
+        "purpose": "Sub-heads inside a zone and section navigation links; uppercase."
+      },
+      "body": {
+        "displayName": "Lettering",
+        "purpose": "All running text at 92% width with tabular figures."
+      },
+      "label": {
+        "displayName": "Field Label",
+        "purpose": "Names a field, column or measured characteristic directly above its value; blueline, uppercase."
+      },
+      "figure": {
+        "displayName": "Measured Figure",
+        "purpose": "KPI values in Sheet Mono."
+      },
+      "mono": {
+        "displayName": "Mono",
+        "purpose": "Test names, files, repro commands, counts."
+      },
+      "stamp": {
+        "displayName": "Stamp Lettering",
+        "purpose": "Verdict stamp only; 75% width."
+      }
+    },
+    "fonts": [
+      {
+        "family": "Sheet Sans",
+        "source": "Ubuntu Sans variable (wght 100-800, wdth 75-100%), subset WOFF2 embedded as data URI",
+        "licence": "Ubuntu Font Licence",
+        "rebuild": "scripts/templates/fonts/make_fonts.sh"
+      },
+      {
+        "family": "Sheet Mono",
+        "source": "Ubuntu Sans Mono (wght 400-800), subset WOFF2 embedded as data URI",
+        "licence": "Ubuntu Font Licence",
+        "rebuild": "scripts/templates/fonts/make_fonts.sh"
+      }
+    ],
+    "strokes": [
+      {
+        "name": "frame",
+        "value": "2px solid #1f3a8a",
+        "purpose": "Sheet frame, header base, title-block divider."
+      },
+      {
+        "name": "rule",
+        "value": "1px solid #1f3a8a",
+        "purpose": "Zone rules, table-head rules, coverage-group rules."
+      },
+      {
+        "name": "hair",
+        "value": "1px solid #9fb0cf",
+        "purpose": "Interior grid hairlines."
+      },
+      {
+        "name": "hole",
+        "value": "1.5px dashed #b42a26",
+        "purpose": "Coverage holes."
+      },
+      {
+        "name": "strike",
+        "value": "line-through 2px #b42a26",
+        "purpose": "Missing or unavailable values."
+      }
+    ],
+    "heatLevels": [
+      0.08,
+      0.2,
+      0.34,
+      0.8,
+      1.0
+    ],
+    "shadows": [],
+    "motion": [
+      {
+        "name": "stamp-press",
+        "value": "700ms cubic-bezier(.16, 1, .3, 1) 150ms both; rotate(-10deg) scale(1.15) to rotate(-6deg) scale(1)",
+        "purpose": "The only animation: the verdict stamp presses onto the sheet. Reduced motion and print disable it; phones press from rotate(-3deg) scale(1.08) to rotate(-3deg) scale(1)."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "kpi-four",
+        "value": "1320px"
+      },
+      {
+        "name": "stack",
+        "value": "1100px"
+      },
+      {
+        "name": "phone",
+        "value": "700px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Section Navigation",
+      "kind": "nav",
+      "refersTo": "section-nav-link",
+      "description": "Zone-lettered sheet index; letters match the margin zone letters.",
+      "html": "<nav class=\"ds-nav\"><a href=\"#a\"><b>A</b>Overview</a><a href=\"#b\"><b>B</b>Tests</a><a href=\"#c\"><b>C</b>Failures</a><a href=\"#d\"><b>D</b>Functional</a></nav>",
+      "css": ":host{--ground:#eef1ef;--ground-2:#e4e9e7;--blue:#1f3a8a;--blue-soft:#9fb0cf;--blue-wash:#d7deea;--ink:#0f1b33;--ink-2:#3c4a68;--red:#b42a26;--green:#2a7148;--sans:'Sheet Sans',Bahnschrift,'DIN Alternate','Arial Narrow',sans-serif;--mono:'Sheet Mono',ui-monospace,Consolas,monospace;}.ds-nav{display:flex;flex-wrap:wrap;gap:4px 20px;background:var(--ground);padding:12px;font-family:var(--sans);font-stretch:92%}.ds-nav a{display:inline-flex;gap:6px;align-items:baseline;padding:4px 0;font-size:14px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;text-decoration:none;color:var(--ink);border-bottom:2px solid transparent}.ds-nav a b{color:var(--blue);font-weight:700}.ds-nav a:hover{border-bottom-color:var(--blue)}.ds-nav a:focus-visible{outline:2px solid var(--blue);outline-offset:2px}"
+    },
+    {
+      "name": "Title Block",
+      "kind": "card",
+      "refersTo": "title-block-field",
+      "description": "Hairline-ruled identity fields; missing values struck in redline with a stated reason.",
+      "html": "<div class=\"ds-tb\"><div><span class=\"ds-lbl\">Runs</span><span class=\"ds-v\">527</span></div><div><span class=\"ds-lbl\">Master seed</span><span class=\"ds-v\">20261111</span></div><div><span class=\"ds-lbl\">Commit</span><span class=\"ds-v ds-struck\">n/a</span><span class=\"ds-why\">not a git repository</span></div></div>",
+      "css": ":host{--ground:#eef1ef;--ground-2:#e4e9e7;--blue:#1f3a8a;--blue-soft:#9fb0cf;--blue-wash:#d7deea;--ink:#0f1b33;--ink-2:#3c4a68;--red:#b42a26;--green:#2a7148;--sans:'Sheet Sans',Bahnschrift,'DIN Alternate','Arial Narrow',sans-serif;--mono:'Sheet Mono',ui-monospace,Consolas,monospace;}.ds-tb{display:grid;grid-template-columns:repeat(3,1fr);border-left:2px solid var(--blue);border-top:1px solid var(--blue-soft);background:var(--ground);font-family:var(--sans);font-stretch:92%}.ds-tb>div{padding:7px 12px;border-right:1px solid var(--blue-soft);border-bottom:1px solid var(--blue-soft)}.ds-lbl{display:block;font-size:12px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--blue)}.ds-v{display:block;font:600 15px/1.3 var(--mono);color:var(--ink)}.ds-struck{text-decoration:line-through 2px var(--red);color:var(--ink-2)}.ds-why{display:block;font-size:12px;color:var(--red)}"
+    },
+    {
+      "name": "Verdict Stamp",
+      "kind": "custom",
+      "refersTo": "stamp-released",
+      "description": "Rotated double-ruled rubber stamp; green when released, redline when not. The sheet's only motion.",
+      "html": "<div class=\"ds-stage\"><span class=\"ds-stamp ds-ok\">Released<small>527/527 pass</small></span><span class=\"ds-stamp ds-bad\">Not released<small>11 failing</small></span></div>",
+      "css": ":host{--ground:#eef1ef;--ground-2:#e4e9e7;--blue:#1f3a8a;--blue-soft:#9fb0cf;--blue-wash:#d7deea;--ink:#0f1b33;--ink-2:#3c4a68;--red:#b42a26;--green:#2a7148;--sans:'Sheet Sans',Bahnschrift,'DIN Alternate','Arial Narrow',sans-serif;--mono:'Sheet Mono',ui-monospace,Consolas,monospace;}.ds-stage{display:flex;gap:32px;padding:24px;background:var(--ground)}.ds-stamp{display:inline-block;padding:7px 10px;border:4px double currentColor;font:800 17px/1.1 var(--sans);font-stretch:75%;letter-spacing:.14em;max-width:142px;text-align:center;text-transform:uppercase;transform:rotate(-6deg)}.ds-stamp small{display:block;font-size:12px;letter-spacing:.1em;font-weight:700}.ds-ok{color:var(--green)}.ds-bad{color:var(--red);font-size:15px;letter-spacing:.1em}@media (prefers-reduced-motion:no-preference){.ds-stamp{animation:ds-press 700ms cubic-bezier(.16,1,.3,1) 150ms both}@keyframes ds-press{from{transform:rotate(-10deg) scale(1.15)}to{transform:rotate(-6deg) scale(1)}}}"
+    },
+    {
+      "name": "Measured Characteristic",
+      "kind": "card",
+      "refersTo": "kpi-cell",
+      "description": "Hairline KPI cell: label with source-note ref, mono figure, sub-line with state mark, true-length gauge with limit tick.",
+      "html": "<dl class=\"ds-kpis\"><div><dt class=\"ds-lbl\">Line <a class=\"ds-nref\" href=\"#\">3</a></dt><dd><span class=\"ds-fig\">100.00%</span><span class=\"ds-sub\">119/119 &middot; 4 waived</span><span class=\"ds-gauge\"><i style=\"width:100%\"></i><b style=\"left:95%\"></b></span></dd></div><div class=\"ds-below\"><dt class=\"ds-lbl\">Functional <a class=\"ds-nref\" href=\"#\">2</a></dt><dd><span class=\"ds-fig\">90.00%</span><span class=\"ds-sub\"><svg class=\"ds-mk\" viewBox=\"0 0 16 16\"><path d=\"M4 4l8 8M12 4l-8 8\"/></svg> 5 holes in 5 groups</span><span class=\"ds-gauge\"><i style=\"width:90%\"></i><b style=\"left:100%\"></b></span></dd></div></dl>",
+      "css": ":host{--ground:#eef1ef;--ground-2:#e4e9e7;--blue:#1f3a8a;--blue-soft:#9fb0cf;--blue-wash:#d7deea;--ink:#0f1b33;--ink-2:#3c4a68;--red:#b42a26;--green:#2a7148;--sans:'Sheet Sans',Bahnschrift,'DIN Alternate','Arial Narrow',sans-serif;--mono:'Sheet Mono',ui-monospace,Consolas,monospace;}.ds-mk{width:15px;height:15px;vertical-align:-2px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}.ds-kpis{display:grid;grid-template-columns:repeat(2,220px);margin:0;border-top:1px solid var(--blue-soft);border-left:1px solid var(--blue-soft);background:var(--ground);font-family:var(--sans);font-stretch:92%;color:var(--ink)}.ds-kpis>div{padding:12px 14px 14px;border-right:1px solid var(--blue-soft);border-bottom:1px solid var(--blue-soft)}.ds-kpis dd{margin:0}.ds-lbl{font-size:12px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--blue)}.ds-fig{display:block;font:600 26px/1.15 var(--mono);letter-spacing:-.02em}.ds-sub{display:block;font-size:13px;color:var(--ink-2);margin-top:2px}.ds-below .ds-fig,.ds-below .ds-sub{color:var(--red)}.ds-gauge{position:relative;display:block;height:7px;margin-top:9px;background:var(--blue-wash)}.ds-gauge i{position:absolute;inset:0 auto 0 0;background:var(--blue)}.ds-below .ds-gauge i{background:var(--red)}.ds-gauge b{position:absolute;top:-4px;bottom:-4px;width:2px;margin-left:-1px;background:var(--ink)}.ds-nref{display:inline-grid;place-items:center;width:19px;height:19px;border:1px solid var(--blue);border-radius:50%;font:600 12px/1 var(--sans);color:var(--blue);text-decoration:none;letter-spacing:0}.ds-nref:hover{background:var(--blue);color:var(--ground)}.ds-nref:focus-visible{outline:2px solid var(--blue);outline-offset:2px}"
+    },
+    {
+      "name": "Results Table",
+      "kind": "custom",
+      "refersTo": "table-header",
+      "description": "Ruled table; failing rows washed and redlined with repro commands; status by mark and word.",
+      "html": "<table class=\"ds-t\"><thead><tr><th>Test</th><th class=\"ds-n\">Runs</th><th class=\"ds-n\">Fail</th><th>Status</th></tr></thead><tbody><tr class=\"ds-fail\"><td><span class=\"ds-mono\">smoke_test</span><span class=\"ds-repro\">Vrouter_tb +TEST=smoke_test +SEED=1947664000</span></td><td class=\"ds-n\">1</td><td class=\"ds-n ds-hot\">1</td><td><span class=\"ds-st ds-bad\"><svg class=\"ds-mk\" viewBox=\"0 0 16 16\"><path d=\"M4 4l8 8M12 4l-8 8\"/></svg> 1 fail</span></td></tr><tr><td><span class=\"ds-mono\">random_test</span></td><td class=\"ds-n\">120</td><td class=\"ds-n ds-zero\">0</td><td><span class=\"ds-st ds-ok\"><svg class=\"ds-mk\" viewBox=\"0 0 16 16\"><path d=\"M3 8.5l3.2 3L13 4.5\"/></svg> Pass</span></td></tr></tbody></table>",
+      "css": ":host{--ground:#eef1ef;--ground-2:#e4e9e7;--blue:#1f3a8a;--blue-soft:#9fb0cf;--blue-wash:#d7deea;--ink:#0f1b33;--ink-2:#3c4a68;--red:#b42a26;--green:#2a7148;--sans:'Sheet Sans',Bahnschrift,'DIN Alternate','Arial Narrow',sans-serif;--mono:'Sheet Mono',ui-monospace,Consolas,monospace;}.ds-mk{width:15px;height:15px;vertical-align:-2px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}.ds-t{border-collapse:collapse;width:100%;background:var(--ground);font:400 15px/1.45 var(--sans);font-stretch:92%;color:var(--ink);font-variant-numeric:tabular-nums}.ds-t th{text-align:left;font-size:12px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--blue);padding:6px 10px;border-bottom:1px solid var(--blue)}.ds-t td{padding:7px 10px;border-bottom:1px solid var(--blue-soft);vertical-align:top}.ds-t .ds-n{text-align:right}td.ds-n{font-family:var(--mono);font-size:14px}.ds-fail td{background:rgba(180,42,38,.06)}.ds-hot{color:var(--red);font-weight:700}.ds-zero{color:var(--ink-2)}.ds-mono{font-family:var(--mono);font-size:13px}.ds-repro{display:block;margin-top:4px;color:var(--red);font-family:var(--mono);font-size:13px}.ds-st{display:inline-flex;gap:6px;align-items:center;font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase}.ds-ok{color:var(--green)}.ds-bad{color:var(--red)}"
+    },
+    {
+      "name": "Coverage Bins and Heat Cells",
+      "kind": "chip",
+      "refersTo": "bin-chip",
+      "description": "Square hairline bin chips with dashed redline holes; heat cells at the five blueline tint steps with hatched zeros.",
+      "html": "<div class=\"ds-wrap\"><div class=\"ds-bins\"><span class=\"ds-bin\">no <b>17k</b></span><span class=\"ds-bin\">yes <b>18k</b></span><span class=\"ds-bin ds-hole\"><svg class=\"ds-mk\" viewBox=\"0 0 16 16\"><rect x=\"3\" y=\"3\" width=\"10\" height=\"10\"/><path d=\"M5.5 5.5l5 5M10.5 5.5l-5 5\"/></svg>&lt;=3 <b>0</b></span></div><table class=\"ds-heat\"><tr><td style=\"background:rgba(31,58,138,.08)\">297</td><td style=\"background:rgba(31,58,138,.34)\">4,149</td><td class=\"ds-hi\" style=\"background:rgba(31,58,138,1)\">23k</td><td class=\"ds-z\">0</td></tr></table></div>",
+      "css": ":host{--ground:#eef1ef;--ground-2:#e4e9e7;--blue:#1f3a8a;--blue-soft:#9fb0cf;--blue-wash:#d7deea;--ink:#0f1b33;--ink-2:#3c4a68;--red:#b42a26;--green:#2a7148;--sans:'Sheet Sans',Bahnschrift,'DIN Alternate','Arial Narrow',sans-serif;--mono:'Sheet Mono',ui-monospace,Consolas,monospace;}.ds-mk{width:15px;height:15px;vertical-align:-2px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}.ds-wrap{background:var(--ground);padding:12px;font-family:var(--sans);font-stretch:92%;color:var(--ink)}.ds-bins{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:12px}.ds-bin{display:inline-flex;gap:6px;align-items:baseline;padding:2px 7px;border:1px solid var(--blue-soft);font-size:13px}.ds-bin b{font:600 13px/1.3 var(--mono)}.ds-hole{border:1.5px dashed var(--red);color:var(--red)}.ds-heat{border-collapse:separate;border-spacing:2px}.ds-heat td{width:46px;height:26px;border:1px solid var(--blue-soft);text-align:center;font:600 12px/1 var(--mono);color:var(--ink)}.ds-heat td.ds-hi{color:var(--ground)}.ds-heat td.ds-z{color:var(--red);border:1.5px solid var(--red);background:repeating-linear-gradient(45deg,transparent 0 4px,rgba(180,42,38,.18) 4px 5px)}"
+    },
+    {
+      "name": "Revision Box",
+      "kind": "custom",
+      "refersTo": "revision-box",
+      "description": "Redline revision notes, each led by a numbered revision triangle.",
+      "html": "<div class=\"ds-rev\"><h3>Revisions</h3><p><svg class=\"ds-tri\" viewBox=\"0 0 26 23\"><path d=\"M13 1.6 L24.4 21.4 H1.6Z\"/><text x=\"13\" y=\"18\" text-anchor=\"middle\">1</text></svg><span>11 of 11 runs failed in 1 bucket(s); repro commands in failed.txt.</span></p></div>",
+      "css": ":host{--ground:#eef1ef;--ground-2:#e4e9e7;--blue:#1f3a8a;--blue-soft:#9fb0cf;--blue-wash:#d7deea;--ink:#0f1b33;--ink-2:#3c4a68;--red:#b42a26;--green:#2a7148;--sans:'Sheet Sans',Bahnschrift,'DIN Alternate','Arial Narrow',sans-serif;--mono:'Sheet Mono',ui-monospace,Consolas,monospace;}.ds-rev{padding:12px 14px;border:1.5px solid var(--red);border-radius:18px;color:var(--red);background:var(--ground);font:400 14px/1.45 var(--sans);font-stretch:92%;max-width:340px}.ds-rev h3{margin:0 0 6px;font-size:15px;font-weight:700;letter-spacing:.06em;text-transform:uppercase}.ds-rev p{margin:6px 0 0;display:grid;grid-template-columns:34px 1fr;align-items:start}.ds-tri{width:26px;height:23px;fill:none;stroke:var(--red);stroke-width:1.4}.ds-tri text{fill:var(--red);stroke:none;font:700 11px var(--sans)}"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Release Drawing",
+    "overview": "The report is issued the way an engineering drawing is released: one whiteprint sheet framed by a blueline border, numbered 1 to 8 across the top and lettered down the left margin, with a title block that carries the run's identity and a rubber-stamp verdict. Every section is a zone addressed by its margin letter (A to G), and the same letters drive the section navigation, so \"zone D\" in a source note and the \"D\" link are one address. Numbers are keyed to small circled source notes that list the file each figure came from; anything short of sign-off is corrected in place in redline: struck values, red gauges, dashed hole bins, hatched zero cells, and revision triangles in a red revision box.\n\nThe sheet is dense on purpose. Bin-level detail, per-module coverage and per-test repro commands sit open on the page in hairline-ruled grids; there are no cards, no panels lifted off the ground, no shadows. Depth is only line weight: a 2px blueline frame, 1px blueline rules between zones and under table heads, 1px pale-blue hairlines inside grids. Lettering is a condensed technical sans with tabular figures; measured values are set in a monospace so columns of figures align like a parts list.\n\nColour is ink on paper. Blueline does the drafting (rules, labels, bars, links); dark drafting ink does the lettering; redline appears only where something failed, is missing, or is below its limit; release green appears only on the RELEASED stamp and pass marks. State is always carried by a mark's shape as well as its hue: a tick, a cross, a struck value, a dashed outline, a hatched cell, a triangle.",
+    "keyCharacteristics": [
+      "One committed whiteprint ground across the whole page, framed by a zone-lettered blueline border.",
+      "Hairline-ruled grids instead of cards; flat, shadowless, square-cornered.",
+      "Title block with a rotated, double-ruled rubber stamp as the verdict.",
+      "Circled source-note references on every figure, resolved in a Notes column.",
+      "Redline corrections in place: strike-through, red gauge fill, dashed holes, hatched zeros, revision triangles.",
+      "True-length bars and gauges with a tick at the sign-off limit."
+    ],
+    "rules": [
+      {
+        "name": "The Rationed Signal Rule",
+        "body": "Redline marks something that failed, is missing, or sits below its sign-off limit; release green marks a pass. Neither is ever decoration, accent, or emphasis.",
+        "section": "colors"
+      },
+      {
+        "name": "The Shape-Before-Hue Rule",
+        "body": "Every red or green state also carries a shape: tick, cross, hole glyph, strike-through, dashed outline, hatch, or triangle. A colour change alone is not a state.",
+        "section": "colors"
+      },
+      {
+        "name": "The Five-Step Tint Rule",
+        "body": "Heat-grid cells use blueline at only five opacities (0.08, 0.20, 0.34, 0.80, 1.00), skipping the middle of the ramp so figures stay legible: dark ink on the three light steps, whiteprint on the two dark ones.",
+        "section": "colors"
+      },
+      {
+        "name": "The Figures-In-Mono Rule",
+        "body": "Every measured value (percentages, counts, seeds, dates, commit) is set in Sheet Mono; every word that names something is set in Sheet Sans. Tabular numerals are on everywhere.",
+        "section": "typography"
+      },
+      {
+        "name": "The Labels-Are-Field-Names Rule",
+        "body": "The small spaced uppercase label exists only to name a field, a column, or a measured characteristic directly above its value. It never floats above a heading as a decorative tag.",
+        "section": "typography"
+      },
+      {
+        "name": "The Line-Weight-Is-Depth Rule",
+        "body": "Hierarchy is drawn with three stroke weights (2px blueline, 1px blueline, 1px hairline), never with shadow or fill. If a group needs separating, rule it.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "**Do** keep the whiteprint ground under everything, including inside grids, title block and charts.",
+      "**Do** draw every bar and gauge to true length, with a drafting-ink tick at the sign-off limit where one exists.",
+      "**Do** key each figure to a circled source note and list that note's file in the Notes column.",
+      "**Do** show missing or unavailable values as struck-through text with a stated reason.",
+      "**Do** pair every red or green state with its shape mark (tick, cross, dashed hole, hatch, strike, triangle).",
+      "**Do** set every measured value in Sheet Mono with tabular figures.",
+      "**Do** embed the fonts; the report must open offline with no network request."
+    ],
+    "donts": [
+      "**Don't** lift content into cards, panels, or tiles with fills or shadows; rule it with hairlines instead.",
+      "**Don't** use redline or release green for emphasis, branding, links, or decoration.",
+      "**Don't** round corners outside the three native rounded forms (note circle, revision box, revision triangle).",
+      "**Don't** add motion beyond the stamp press.",
+      "**Don't** set uppercase spaced labels above headings as tags; labels only name the field or column they sit on.",
+      "**Don't** use emoji or text glyphs as state marks; use the stroke-only SVG symbols.",
+      "**Don't** shade heat cells between the 0.34 and 0.80 tint steps."
+    ]
+  }
+}

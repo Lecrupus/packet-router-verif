@@ -1,0 +1,466 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Router regression · {{ r.label }}</title>
+{% set released = r.ok %}
+{% set ct = r.code %}
+{% macro pc(v, d=1) -%}{% if v is none %}n/a{% else %}{{ ('%.' ~ d ~ 'f')|format(v) }}{% endif %}{%- endmacro %}
+{% macro note(n) -%}<a class="nref" href="#note-{{ n }}" aria-label="source note {{ n }}">{{ n }}</a>{%- endmacro %}
+{% macro tri(n) -%}<svg class="tri" viewBox="0 0 26 23" role="img" aria-label="revision {{ n }}"><path d="M13 1.6 L24.4 21.4 H1.6Z"/><text x="13" y="18" text-anchor="middle">{{ n }}</text></svg>{%- endmacro %}
+{% macro mark(kind) -%}<svg class="mk mk-{{ kind }}" aria-hidden="true"><use href="#i-{{ kind }}"/></svg>{%- endmacro %}
+{% macro gauge(v, target=none, bad=false) -%}
+<span class="gauge{{ ' bad' if bad }}" aria-hidden="true">{% if v is not none %}<i style="width: {{ v }}%"></i>{% endif %}{% if target is not none %}<b style="left: {{ target }}%"></b>{% endif %}</span>
+{%- endmacro %}
+<style>
+{{ fonts|safe }}
+:root {
+  --ground: #eef1ef;      /* whiteprint sheet */
+  --ground-2: #e4e9e7;    /* ruled band */
+  --blue: #1f3a8a;        /* blueline ink: rules, labels, border */
+  --blue-soft: #9fb0cf;   /* hairline grid */
+  --blue-wash: #d7deea;   /* gauge track */
+  --ink: #0f1b33;         /* lettering */
+  --ink-2: #3c4a68;       /* secondary lettering */
+  --red: #b42a26;         /* redline: failures, holes, revisions */
+  --green: #2a7148;       /* release stamp, pass marks */
+  --sans: 'Sheet Sans', Bahnschrift, 'DIN Alternate', 'Arial Narrow', sans-serif;
+  --mono: 'Sheet Mono', ui-monospace, Consolas, monospace;
+  --hair: 1px solid var(--blue-soft);
+  --rule: 1px solid var(--blue);
+  --gutter: 40px;
+}
+* { box-sizing: border-box; }
+html { background: var(--ground); color: var(--ink); scrollbar-color: var(--blue-soft) var(--ground); }
+body { margin: 0; background: var(--ground); font: 400 15px/1.45 var(--sans); font-stretch: 92%; font-variant-numeric: tabular-nums; }
+::selection { background: var(--blue); color: var(--ground); }
+a { color: var(--blue); text-decoration-thickness: 1px; text-underline-offset: 3px; }
+a:focus-visible, summary:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
+code, .mono { font-family: var(--mono); font-size: 13px; font-stretch: normal; }
+h2 { margin: 0; font-size: 19px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--ink); }
+h3 { margin: 0; font-size: 15px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; }
+.lbl { font-size: 12px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--blue); }
+.muted { color: var(--ink-2); }
+
+/* ---- the sheet: frame, zone marks ---- */
+.sheet { position: relative; max-width: 1480px; margin: 16px auto 32px; border: 2px solid var(--blue); padding: 22px 0 0 0; }
+.sheet::before { content: ""; position: absolute; inset: 22px 0 0 var(--gutter); border-left: var(--rule); border-top: var(--rule); pointer-events: none; }
+.cols { position: absolute; top: 0; left: var(--gutter); right: 0; height: 22px; display: grid; grid-template-columns: repeat(8, 1fr); }
+.cols span { border-left: var(--hair); font: 600 12px/22px var(--sans); color: var(--blue); text-align: center; }
+.cols span:first-child { border-left: 0; }
+.zone { position: relative; display: grid; grid-template-columns: var(--gutter) 1fr; border-bottom: var(--rule); scroll-margin-top: 8px; }
+.zone:last-of-type { border-bottom: 0; }
+.zl { display: flex; align-items: flex-start; justify-content: center; padding-top: 18px; font: 700 15px/1 var(--sans); color: var(--blue); border-right: 0; }
+.zc { padding: 20px 28px 26px; min-width: 0; }
+.zh { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 14px; margin-bottom: 14px; }
+.zh .src { font-size: 13px; color: var(--ink-2); }
+.nref { display: inline-grid; place-items: center; width: 19px; height: 19px; border: 1px solid var(--blue); border-radius: 50%; font: 600 12px/1 var(--sans); text-decoration: none; vertical-align: 1px; }
+.nref:hover { background: var(--blue); color: var(--ground); }
+
+/* ---- head: navigation + title block ---- */
+.head { display: grid; grid-template-columns: var(--gutter) 1fr minmax(0, 600px); border-bottom: 2px solid var(--blue); }
+.head .zl { padding-top: 22px; }
+.nav { display: flex; flex-direction: column; justify-content: space-between; gap: 18px; padding: 20px 28px; }
+.nav .proj { font-size: 13px; color: var(--ink-2); }
+.nav h1 { margin: 0 0 2px; font-size: 26px; line-height: 1.1; font-weight: 750; font-stretch: 80%; letter-spacing: .01em; color: var(--ink); text-transform: uppercase; }
+.nav ul { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 4px 20px; }
+.nav a { display: inline-flex; gap: 6px; align-items: baseline; padding: 4px 0; font-size: 14px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; text-decoration: none; color: var(--ink); border-bottom: 2px solid transparent; }
+.nav a b { color: var(--blue); font-weight: 700; }
+.nav a:hover { border-bottom-color: var(--blue); }
+.tb { display: grid; grid-template-columns: repeat(3, 1fr) 176px; border-left: 2px solid var(--blue); }
+.tb > div { padding: 7px 12px; border-right: var(--hair); border-bottom: var(--hair); min-width: 0; }
+.tb .v { display: block; font: 600 15px/1.3 var(--mono); overflow-wrap: anywhere; }
+.tb .wide { grid-column: span 2; }
+.tb .wide .v { white-space: nowrap; }
+.tb .title { grid-column: 1 / 4; font-size: 19px; font-weight: 750; letter-spacing: .04em; text-transform: uppercase; display: flex; align-items: center; }
+.tb .stampcell { grid-column: 4; grid-row: 1 / 5; display: grid; place-items: center; border-bottom: 0; border-right: 0 !important; padding: 16px 8px; overflow: hidden; }
+.tb .v.struck { text-decoration: line-through 2px var(--red); color: var(--ink-2); }
+.tb .why { display: block; font-size: 12px; color: var(--red); }
+.stamp { display: inline-block; padding: 7px 10px; border: 4px double currentColor; font: 800 17px/1.1 var(--sans); font-stretch: 75%; letter-spacing: .14em; max-width: 142px; text-align: center; text-transform: uppercase; --rot: -6deg; transform: rotate(var(--rot)); }
+.stamp small { display: block; font-size: 12px; letter-spacing: .1em; font-weight: 700; }
+.stamp.ok { color: var(--green); border-color: var(--green); }
+.stamp.bad { color: var(--red); border-color: var(--red); font-size: 15px; letter-spacing: .1em; }
+@media (prefers-reduced-motion: no-preference) {
+  .stamp { animation: press 700ms cubic-bezier(.16, 1, .3, 1) 150ms both; }
+  @keyframes press { from { transform: rotate(-10deg) scale(1.15); } to { transform: rotate(var(--rot)) scale(1); } }
+  /* phones: a smaller press that stays inside its cell from the first frame */
+  @keyframes press-sm { from { transform: rotate(-3deg) scale(1.08); } to { transform: rotate(-3deg) scale(1); } }
+}
+
+/* ---- overview: measured characteristics strip + notes ---- */
+.ov { display: grid; grid-template-columns: 1fr 340px; gap: 0; }
+.ov > * { min-width: 0; }
+.kpis { display: grid; grid-template-columns: repeat(8, 1fr); border-top: var(--hair); border-left: var(--hair); margin: 0; }
+.kpis > div { padding: 12px 14px 14px; border-right: var(--hair); border-bottom: var(--hair); }
+.kpis dt { margin-bottom: 4px; }
+.kpis dd { margin: 0; }
+.kpis .v { display: block; font: 600 26px/1.15 var(--mono); letter-spacing: -.02em; white-space: nowrap; }
+.kpis .below .v, .below-t { color: var(--red); }
+.kpis .below .sub { color: var(--red); }
+.kpis .v.struck { text-decoration: line-through 2px var(--red); color: var(--ink-2); }
+.kpis .sub { display: block; font-size: 13px; color: var(--ink-2); margin-top: 2px; }
+.gauge { position: relative; display: block; height: 7px; margin-top: 9px; background: var(--blue-wash); }
+.gauge i { position: absolute; inset: 0 auto 0 0; background: var(--blue); }
+.gauge.bad i { background: var(--red); }
+.gauge b { position: absolute; top: -4px; bottom: -4px; width: 2px; margin-left: -1px; background: var(--ink); }
+.notes { padding-left: 26px; }
+.notes ol { margin: 8px 0 0; padding: 0; list-style: none; counter-reset: n; }
+.notes li { display: grid; grid-template-columns: 26px 1fr; gap: 4px; margin-bottom: 8px; font-size: 14px; }
+.notes li > span { display: inline-grid; place-items: center; width: 19px; height: 19px; border: 1px solid var(--blue); border-radius: 50%; font-size: 12px; font-weight: 600; color: var(--blue); }
+.notes li:target { background: var(--ground-2); outline: 1px solid var(--blue-soft); }
+.rev { margin-top: 16px; padding: 12px 14px; border: 1.5px solid var(--red); border-radius: 18px; color: var(--red); }
+.rev h3 { color: var(--red); margin-bottom: 6px; }
+.rev p { margin: 6px 0 0; font-size: 14px; display: grid; grid-template-columns: 34px 1fr; align-items: start; }
+.tri { width: 26px; height: 23px; fill: none; stroke: var(--red); stroke-width: 1.4; }
+.tri text { fill: var(--red); stroke: none; font: 700 11px var(--sans); }
+.clean { margin-top: 16px; font-size: 14px; color: var(--green); display: flex; gap: 8px; align-items: center; }
+
+/* ---- tables ---- */
+.scroll { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; }
+th { text-align: left; font-size: 12px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--blue); padding: 6px 10px; border-bottom: var(--rule); white-space: nowrap; }
+td { padding: 7px 10px; border-bottom: var(--hair); vertical-align: top; }
+td.n, th.n { text-align: right; font-family: var(--mono); font-size: 14px; }
+th.n { font-family: var(--sans); font-size: 12px; }
+tr.fail td { background: rgba(180, 42, 38, .06); }
+td.zero { color: var(--ink-2); }
+td.hot { color: var(--red); font-weight: 700; }
+.share { display: block; height: 9px; min-width: 120px; background: var(--blue-wash); }
+.share i { display: block; height: 100%; background: var(--blue); }
+.repro { display: block; margin-top: 4px; color: var(--red); font-family: var(--mono); font-size: 13px; overflow-wrap: anywhere; }
+.mk { width: 15px; height: 15px; vertical-align: -2px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex: none; }
+.st { white-space: nowrap; display: inline-flex; gap: 6px; align-items: center; font-size: 13px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+.st.ok { color: var(--green); } .st.bad { color: var(--red); }
+.empty { display: flex; gap: 10px; align-items: center; padding: 10px 0; color: var(--green); font-size: 15px; }
+
+/* ---- functional coverage ---- */
+.cg { border-top: var(--rule); padding-top: 12px; margin-top: 18px; }
+.cg:first-of-type { margin-top: 0; }
+.cg-h { display: grid; grid-template-columns: 160px 80px 1fr; gap: 14px; align-items: center; margin-bottom: 10px; }
+.cg-h .pct { font: 600 18px/1 var(--mono); white-space: nowrap; }
+.cg-h .gauge { margin-top: 0; }
+.items { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 0 28px; }
+.item { padding: 10px 0 12px; border-top: var(--hair); min-width: 0; }
+.item-h { display: flex; justify-content: space-between; gap: 10px; margin-bottom: 8px; }
+.item-h .mono { font-weight: 600; color: var(--ink); }
+.item-h span:last-child { font-size: 13px; color: var(--ink-2); white-space: nowrap; }
+.bins { display: flex; flex-wrap: wrap; gap: 4px; }
+.bin { display: inline-flex; gap: 6px; align-items: baseline; padding: 2px 7px; border: var(--hair); font-size: 13px; }
+.bin b { font: 600 13px/1.3 var(--mono); }
+.bin.hole { border: 1.5px dashed var(--red); color: var(--red); }
+.heat { border-collapse: separate; border-spacing: 2px; width: auto; }
+.heat th, .heat td { border: 0; padding: 0; text-align: center; font: 600 12px/1 var(--mono); letter-spacing: 0; text-transform: none; color: var(--ink-2); }
+.heat th { padding: 0 6px 0 0; }
+.heat thead th { padding: 0 0 4px; }
+.heat td { width: 46px; height: 26px; border: var(--hair); color: var(--ink); vertical-align: middle; }
+.heat td.hi { color: var(--ground); }
+.heat td.zero { color: var(--red); border: 1.5px solid var(--red); background: repeating-linear-gradient(45deg, transparent 0 4px, rgba(180, 42, 38, .18) 4px 5px); }
+.axes { font-size: 12px; color: var(--ink-2); margin-top: 4px; }
+
+/* ---- code coverage ---- */
+.cov { display: grid; grid-template-columns: 74px 1fr; gap: 2px 10px; align-items: center; min-width: 190px; }
+.cov .gauge { margin: 0; }
+.cov small { grid-column: 1 / 3; color: var(--ink-2); font-size: 12px; }
+details { margin-top: 12px; }
+summary { cursor: pointer; font-size: 14px; font-weight: 600; color: var(--blue); }
+.links { margin-top: 10px; font-size: 14px; display: flex; flex-wrap: wrap; gap: 6px 18px; }
+
+/* ---- charts ---- */
+.charts { display: grid; grid-template-columns: 1.7fr 1fr; gap: 28px; }
+.charts > *, .items > *, .zc > * { min-width: 0; }
+.chart { width: 100%; height: auto; display: block; font-family: var(--sans); }
+.chart .grid { stroke: var(--blue-soft); stroke-width: 1; }
+.chart .tick, .chart .base { stroke: var(--blue); stroke-width: 1; }
+.chart .ax { fill: var(--ink-2); font-size: 12px; }
+.chart .val { fill: var(--ink); font: 600 12px var(--mono); }
+.chart .series { fill: none; stroke-width: 2.25; }
+.chart .s-func { stroke: var(--blue); }
+.chart .s-line { stroke: var(--ink); stroke-dasharray: 6 4; }
+.chart .limit { stroke-width: 1; stroke-dasharray: 2 3; opacity: .7; }
+.chart .mark { fill: var(--ground); stroke: var(--ink); stroke-width: 1.5; }
+.chart .leader { fill: none; stroke: var(--ink); stroke-width: 1; }
+.chart .callout { fill: var(--ink); font-size: 13px; font-weight: 600; }
+.chart .bar { fill: var(--blue); }
+.legend { display: flex; gap: 18px; font-size: 13px; color: var(--ink-2); margin-top: 6px; }
+.legend i { display: inline-block; width: 26px; height: 0; border-top: 2.25px solid var(--blue); vertical-align: 4px; margin-right: 6px; }
+.legend i.dash { border-top: 2.25px dashed var(--ink); }
+.caption { font-size: 14px; color: var(--ink-2); margin-top: 8px; max-width: 75ch; }
+.tp { display: grid; grid-template-columns: 1fr 40px; gap: 6px; align-items: center; }
+.tp .share { min-width: 50px; height: 7px; }
+
+/* ---- responsive ---- */
+@media (max-width: 1320px) {
+  .kpis { grid-template-columns: repeat(4, 1fr); }
+}
+@media (max-width: 1100px) {
+  .head { grid-template-columns: var(--gutter) 1fr; }
+  .tb { grid-column: 1 / 3; border-left: 0; border-top: var(--rule); }
+  .ov, .charts { grid-template-columns: 1fr; }
+  .notes { padding-left: 0; padding-top: 18px; }
+}
+@media (max-width: 700px) {
+  :root { --gutter: 0px; }
+  body { font-size: 15px; }
+  .sheet { margin: 8px; padding-top: 0; }
+  .sheet::before, .cols, .zl { display: none; }
+  .zone, .head { grid-template-columns: 1fr; }
+  .tb { grid-column: 1; grid-template-columns: 1fr 1fr; }
+  .tb .title { grid-column: 1 / 3; }
+  .tb .stampcell { grid-column: 1 / 3; grid-row: auto; padding: 26px 14px; border-bottom: var(--hair); }
+  .stamp { --rot: -3deg; animation-name: press-sm; }
+  .opt { display: none; }
+  #b th, #b td { padding: 6px 6px; }
+  .zc, .nav { padding: 16px; }
+  .kpis { grid-template-columns: 1fr 1fr; }
+  .kpis .v { font-size: 24px; }
+  .cg-h { grid-template-columns: 1fr auto; }
+  .cg-h .gauge { grid-column: 1 / 3; }
+  .items { grid-template-columns: 1fr; }
+}
+@media print { .sheet { margin: 0; } .stamp { animation: none; } }
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-pass" viewBox="0 0 16 16"><path d="M3 8.5l3.2 3L13 4.5"/></symbol>
+  <symbol id="i-fail" viewBox="0 0 16 16"><path d="M4 4l8 8M12 4l-8 8"/></symbol>
+  <symbol id="i-timeout" viewBox="0 0 16 16"><circle cx="8" cy="8" r="5.5"/><path d="M8 5v3.2l2.2 1.4"/></symbol>
+  <symbol id="i-crash" viewBox="0 0 16 16"><path d="M2.5 9l3-4 2.5 5 2.5-6 3 5"/></symbol>
+  <symbol id="i-hole" viewBox="0 0 16 16"><rect x="3" y="3" width="10" height="10"/><path d="M5.5 5.5l5 5M10.5 5.5l-5 5"/></symbol>
+  <symbol id="i-na" viewBox="0 0 16 16"><circle cx="8" cy="8" r="5.5"/><path d="M4.2 11.8l7.6-7.6"/></symbol>
+</svg>
+
+<div class="sheet">
+  <div class="cols" aria-hidden="true">{% for i in range(1, 9) %}<span>{{ i }}</span>{% endfor %}</div>
+
+  <header class="head">
+    <div class="zl" aria-hidden="true"></div>
+    <div class="nav">
+      <div class="proj">
+        <h1>4×4 packet router · regression</h1>
+        Run <span class="mono">{{ run_folder }}</span>{% if r.defines %} · built with <span class="mono">{{ r.defines|join(', ') }}</span>{% endif %}
+      </div>
+      <nav aria-label="Sheet sections"><ul>
+        <li><a href="#a"><b>A</b>Overview</a></li>
+        <li><a href="#b"><b>B</b>Tests</a></li>
+        <li><a href="#c"><b>C</b>Failures</a></li>
+        <li><a href="#d"><b>D</b>Functional</a></li>
+        <li><a href="#e"><b>E</b>Code</a></li>
+        <li><a href="#f"><b>F</b>Closure</a></li>
+        <li><a href="#g"><b>G</b>Performance</a></li>
+      </ul></nav>
+    </div>
+    <div class="tb">
+      <div class="title">Regression {{ r.label }}</div>
+      <div class="stampcell">
+        {% if released %}<span class="stamp ok">Released<small>{{ r.passed }}/{{ r.runs }} pass</small></span>
+        {% else %}<span class="stamp bad">Not released<small>{{ r.runs - r.passed }} failing</small></span>{% endif %}
+      </div>
+      <div class="wide"><span class="lbl">Project</span><span class="v">packet-router-verif</span></div>
+      <div><span class="lbl">Runs</span><span class="v">{{ r.runs }}</span></div>
+      <div><span class="lbl">Master seed</span><span class="v">{{ r.master_seed }}</span></div>
+      <div><span class="lbl">Commit</span>{% if r.git_commit and r.git_commit != 'n/a' %}<span class="v">{{ r.git_commit }}</span>{% else %}<span class="v struck">n/a</span><span class="why">not a git repository</span>{% endif %}</div>
+      <div><span class="lbl">Date</span><span class="v">{{ r.date[:10] }}</span></div>
+      <div><span class="lbl">Checked by</span><span class="v">scoreboard</span></div>
+      <div><span class="lbl">Revisions</span><span class="v {{ 'below-t' if revisions }}">{{ revisions|length }}</span></div>
+      <div><span class="lbl">Sheet</span><span class="v">1 of 1</span></div>
+    </div>
+  </header>
+
+  <!-- A: measured characteristics, one strip -->
+  <section class="zone" id="a" aria-labelledby="a-h">
+    <div class="zl" aria-hidden="true">A</div>
+    <div class="zc">
+      <div class="zh"><h2 id="a-h">Measured characteristics</h2><span class="src">ticks mark the sign-off limits; anything below its limit is redlined</span></div>
+      <dl class="kpis">
+        {% set pr_bad = r.passed < r.runs %}
+        <div class="{{ 'below' if pr_bad }}"><dt class="lbl">Pass rate {{ note(1) }}</dt><dd><span class="v">{{ '%.1f'|format(r.pass_rate) }}%</span>
+          <span class="sub">{% if pr_bad %}{{ mark('fail') }}{% else %}{{ mark('pass') }}{% endif %} {{ r.passed }} of {{ r.runs }} runs</span>{{ gauge(r.pass_rate, 100, pr_bad) }}</dd></div>
+        {% set fu_bad = r.func.percent < r.thresholds.func - 0.000001 %}
+        <div class="{{ 'below' if fu_bad }}"><dt class="lbl">Functional {{ note(2) }}</dt><dd><span class="v">{{ '%.2f'|format(r.func.percent) }}%</span>
+          <span class="sub">{% if fu_bad %}{{ mark('fail') }} {% endif %}{{ r.func.holes }} hole{{ '' if r.func.holes == 1 else 's' }} in {{ groups|length }} groups</span>{{ gauge(r.func.percent, r.thresholds.func, fu_bad) }}</dd></div>
+        {% for t, name in [('line', 'Line'), ('toggle', 'Toggle'), ('expr', 'Expression')] %}{% set a = ct[t] %}
+        {% set c_bad = a and a.percent is not none and a.percent < r.thresholds[t] - 0.000001 %}
+        <div class="{{ 'below' if c_bad }}"><dt class="lbl">{{ name }} {{ note(3) }}</dt><dd>
+          {% if a and a.percent is not none %}<span class="v">{{ '%.2f'|format(a.percent) }}%</span>
+            <span class="sub">{% if c_bad %}{{ mark('fail') }} {% endif %}{{ a.covered }}/{{ a.total }}{% if a.waived %} · {{ a.waived }} waived{% endif %}</span>{{ gauge(a.percent, r.thresholds[t], c_bad) }}
+          {% else %}<span class="v struck">n/a</span>
+            <span class="sub">{{ mark('na') }} {% if t == 'expr' and not r.expr_supported %}no --coverage-expr{% else %}no points{% endif %}</span>{{ gauge(none, r.thresholds[t]) }}{% endif %}
+        </dd></div>
+        {% endfor %}
+        {% set closed = closure.func and closure.func.final >= r.thresholds.func - 0.000001 %}
+        <div class="{{ 'below' if closure.func and not closed }}"><dt class="lbl">Closure {{ note(4) }}</dt><dd>
+          {% if closed %}<span class="v">run {{ closure.func.run }}</span><span class="sub">{{ mark('pass') }} of {{ curve_len }}, seed order</span>
+          {% elif closure.func %}<span class="v">not closed</span><span class="sub">{{ mark('fail') }} plateau {{ '%.2f'|format(closure.func.final) }}% at run&nbsp;{{ closure.func.run }}</span>
+          {% else %}<span class="v">–</span><span class="sub">no closure data</span>{% endif %}</dd></div>
+        <div><dt class="lbl">Wall time {{ note(1) }}</dt><dd><span class="v">{{ '%.1f'|format(r.wall_time_s) }}s</span>
+          <span class="sub">{{ r.jobs }} workers</span></dd></div>
+        <div><dt class="lbl">Packets {{ note(5) }}</dt><dd><span class="v">{{ lat.n|short }}</span>
+          <span class="sub">scoreboard-matched</span></dd></div>
+      </dl>
+    </div>
+  </section>
+
+  <!-- B: results by test beside the notes -->
+  <section class="zone" id="b" aria-labelledby="b-h">
+    <div class="zl" aria-hidden="true">B</div>
+    <div class="zc ov">
+      <div>
+        <div class="zh"><h2 id="b-h">Results by test</h2>{{ note(1) }}<span class="src opt">bar length is the test's share of all {{ r.runs }} runs, to scale</span></div>
+        <div class="scroll"><table>
+          <thead><tr><th>Test</th><th class="n">Runs</th><th class="n opt">Pass</th><th class="n">Fail</th><th class="n opt">Timeout</th><th class="n opt">Crash</th><th class="opt">Share of runs</th><th>Status</th></tr></thead>
+          <tbody>
+          {% for name, t in r.per_test.items() %}{% set bad = t.FAIL + t.TIMEOUT + t.CRASH %}
+          <tr class="{{ 'fail' if bad }}">
+            <td><span class="mono">{{ name }}</span>
+              {% for f in t.failing[:3] %}<span class="repro">{{ f.repro }}</span>{% endfor %}
+              {% if t.failing|length > 3 %}<span class="repro">+ {{ t.failing|length - 3 }} more in failed.txt {{ note(6) }}</span>{% endif %}</td>
+            <td class="n">{{ t.runs }}</td><td class="n opt">{{ t.PASS }}</td>
+            <td class="n {{ 'hot' if t.FAIL else 'zero' }}">{{ t.FAIL }}</td>
+            <td class="n opt {{ 'hot' if t.TIMEOUT else 'zero' }}">{{ t.TIMEOUT }}</td>
+            <td class="n opt {{ 'hot' if t.CRASH else 'zero' }}">{{ t.CRASH }}</td>
+            <td class="opt" style="width: 20%"><span class="share" title="{{ t.runs }} of {{ r.runs }} runs"><i style="width: {{ 100 * t.runs / r.runs }}%"></i></span></td>
+            <td>{% if bad %}<span class="st bad">{{ mark('fail') }} {{ bad }} fail</span>{% else %}<span class="st ok">{{ mark('pass') }} Pass</span>{% endif %}</td>
+          </tr>
+          {% endfor %}
+          </tbody>
+        </table></div>
+      </div>
+      <aside class="notes" aria-labelledby="notes-h">
+        <h2 id="notes-h">Notes</h2>
+        <ol>
+          <li id="note-1"><span>1</span><div>Runs, pass rate, wall time: <code>results.json</code>, <code>results.csv</code> (zones A, B, C)</div></li>
+          <li id="note-2"><span>2</span><div>Functional: <code>func_cov_merged.json</code>; bin hits summed over every run's <code>func_cov.json</code>, then bins with hits ≥ at_least counted (zone D)</div></li>
+          <li id="note-3"><span>3</span><div>Code: <code>code_cov.json</code> from <code>merged.dat</code> with <code>docs/coverage_waivers.md</code> applied (zone E)</div></li>
+          <li id="note-4"><span>4</span><div>Closure: <code>closure.json</code>, cumulative after each run (zone F)</div></li>
+          <li id="note-5"><span>5</span><div>Performance: <code>jobs/*/summary.json</code>, scoreboard section (zone G)</div></li>
+          <li id="note-6"><span>6</span><div>Repro commands: <code>failed.txt</code></div></li>
+        </ol>
+        {% if revisions %}
+        <div class="rev" role="note"><h3>Revisions</h3>
+          {% for line in revisions %}<p>{{ tri(loop.index) }}<span>{{ line }}</span></p>{% endfor %}
+        </div>
+        {% else %}<p class="clean">{{ mark('pass') }} No open revisions.</p>{% endif %}
+      </aside>
+    </div>
+  </section>
+
+  <!-- C: failure buckets -->
+  <section class="zone" id="c" aria-labelledby="c-h">
+    <div class="zl" aria-hidden="true">C</div>
+    <div class="zc">
+      <div class="zh"><h2 id="c-h">Failure buckets</h2>{{ note(1) }}{{ note(6) }}<span class="src">first error line of each failing run, numbers normalized to N</span></div>
+      {% if r.buckets %}
+      <div class="scroll"><table>
+        <thead><tr><th>Signature</th><th class="n">Runs</th><th>Tests</th><th>First seed</th></tr></thead>
+        <tbody>
+        {% for b in r.buckets %}
+        <tr class="fail"><td><span class="mono">{{ b.signature }}</span><span class="repro">{{ b.repro }}</span></td>
+          <td class="n hot">{{ b.count }}</td><td class="mono">{{ b.tests|join(', ') }}</td><td class="mono">{{ b.first_test }} · {{ b.first_seed }}</td></tr>
+        {% endfor %}
+        </tbody>
+      </table></div>
+      {% else %}<p class="empty">{{ mark('pass') }} No failures in {{ r.runs }} runs, so nothing to bucket.</p>{% endif %}
+    </div>
+  </section>
+
+  <!-- D: functional coverage -->
+  <section class="zone" id="d" aria-labelledby="d-h">
+    <div class="zl" aria-hidden="true">D</div>
+    <div class="zc">
+      <div class="zh"><h2 id="d-h">Functional coverage · {{ '%.2f'|format(r.func.percent) }}%</h2>{{ note(2) }}<span class="src">holes are dashed in red; crosses are drawn as grids, zero cells hatched</span></div>
+      {% for g in groups %}
+      <div class="cg">
+        {% set g_bad = g.percent < r.thresholds.func - 0.000001 %}<div class="cg-h"><h3 class="mono">{{ g.name }}</h3><span class="pct {{ 'below-t' if g_bad }}">{% if g_bad %}{{ mark('fail') }} {% endif %}{{ '%.1f'|format(g.percent) }}%</span>{{ gauge(g.percent, r.thresholds.func, g_bad) }}</div>
+        <div class="items">
+          {% for it in g['items'] %}
+          <div class="item">
+            <div class="item-h"><span class="mono">{{ it.name }}</span><span class="{{ 'below-t' if it.covered < it.total }}">{% if it.covered < it.total %}{{ mark('hole') }} {% endif %}{{ it.covered }}/{{ it.total }} bins · {{ '%.1f'|format(it.percent) }}%</span></div>
+            {% if it.grid %}
+            <div class="scroll"><table class="heat">
+              <thead><tr><th></th>{% for c in it.grid.cols %}<th scope="col">{{ c }}</th>{% endfor %}</tr></thead>
+              <tbody>{% for row in it.grid.rows %}<tr><th scope="row">{{ row.label }}</th>{% for c in row.cells %}
+                {% if c.hits is none %}<td></td>{% elif c.hits == 0 %}<td class="zero" title="hole: 0 hits">0</td>
+                {% else %}<td class="{{ 'hi' if c.shade >= 0.8 }}" style="background: rgba(31, 58, 138, {{ '%.2f'|format(c.shade) }})" title="{{ c.hits }} hits">{{ c.hits|short }}</td>{% endif %}
+              {% endfor %}</tr>{% endfor %}</tbody>
+            </table></div>
+            <div class="axes">rows {{ it.grid.axes[0] }} · columns {{ it.grid.axes[1] }}</div>
+            {% else %}
+            <div class="bins">{% for b in it.bins %}<span class="bin {{ 'hole' if b.hits == 0 }}" title="{{ b.hits }} hits">{% if b.hits == 0 %}{{ mark('hole') }}{% endif %}{{ b.name }} <b>{{ b.short }}</b></span>{% endfor %}</div>
+            {% endif %}
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </section>
+
+  <!-- E: code coverage -->
+  <section class="zone" id="e" aria-labelledby="e-h">
+    <div class="zl" aria-hidden="true">E</div>
+    <div class="zc">
+      <div class="zh"><h2 id="e-h">Code coverage by module</h2>{{ note(3) }}<span class="src">{{ code.uncovered_count or 0 }} uncovered point{{ '' if code.uncovered_count == 1 else 's' }} after waivers</span></div>
+      <div class="scroll"><table>
+        <thead><tr><th>Module</th>{% for t in ['line', 'toggle', 'expr'] %}<th>{{ 'expression' if t == 'expr' else t }}</th>{% endfor %}</tr></thead>
+        <tbody>
+        {% for m in modules %}<tr><td class="mono">{{ m.name }}</td>
+          {% for t in ['line', 'toggle', 'expr'] %}{% set a = m[t] %}<td>
+            {% if a.percent is none %}<span class="muted">{{ mark('na') }} n/a</span>
+            {% else %}{% set m_bad = a.percent < r.thresholds[t] - 0.000001 %}<span class="cov"><span class="mono {{ 'below-t' if m_bad }}">{% if m_bad %}{{ mark('fail') }} {% endif %}{{ '%.1f'|format(a.percent) }}%</span>{{ gauge(a.percent, r.thresholds[t], m_bad) }}<small>{{ a.covered }}/{{ a.total }}{% if a.waived %} · {{ a.waived }} waived{% endif %}</small></span>{% endif %}
+          </td>{% endfor %}</tr>
+        {% endfor %}
+        </tbody>
+      </table></div>
+      <div class="links">
+        {% if has_genhtml %}<a href="../code_cov_html/index.html">genhtml report</a>{% endif %}
+        {% if has_annotated %}<span>Annotated source in <code>annotated/</code></span>{% endif %}
+        <span>lcov: <code>merged.info</code></span><span>waivers: <code>docs/coverage_waivers.md</code></span>
+      </div>
+      {% if code.uncovered %}
+      <details><summary>Uncovered points ({{ code.uncovered_count }})</summary>
+        <div class="scroll"><table><thead><tr><th>Type</th><th>Location</th><th>Point</th><th>Instance</th></tr></thead><tbody>
+        {% for p in code.uncovered[:200] %}<tr><td>{{ p.type }}</td><td class="mono">{{ p.file }}:{{ p.line }}</td><td class="mono">{{ p.comment }}</td><td class="mono muted">{{ p.hier }}</td></tr>{% endfor %}
+        </tbody></table></div>
+      </details>{% endif %}
+    </div>
+  </section>
+
+  <!-- F: closure curve -->
+  <section class="zone" id="f" aria-labelledby="f-h">
+    <div class="zl" aria-hidden="true">F</div>
+    <div class="zc">
+      <div class="zh"><h2 id="f-h">Closure curve</h2>{{ note(4) }}<span class="src">cumulative coverage after each run, seed order, log scale</span></div>
+      {% if closure_svg %}{{ closure_svg|safe }}
+      <div class="legend"><span><i></i>functional</span><span><i class="dash"></i>line</span><span>dotted: sign-off limits</span></div>
+      <p class="caption">{% if closure.func %}Functional coverage reached {{ '%.2f'|format(closure.func.final) }}% at run {{ closure.func.run }}{% endif %}{% if closure.line %} and line coverage {{ '%.2f'|format(closure.line.final) }}% at run {{ closure.line.run }}{% endif %} of {{ curve_len }}. Past that point random stimulus found no new bins.</p>
+      {% else %}<p class="muted">No closure data in this run.</p>{% endif %}
+    </div>
+  </section>
+
+  <!-- G: performance -->
+  <section class="zone" id="g" aria-labelledby="g-h">
+    <div class="zl" aria-hidden="true">G</div>
+    <div class="zc">
+      <div class="zh"><h2 id="g-h">Performance</h2>{{ note(5) }}<span class="src">{{ lat.n|short }} matched packets · mean latency {{ '%.1f'|format(lat.avg) }} · max {{ lat.max }} cycles</span></div>
+      <div class="charts">
+        <div>
+          <h3>Throughput per output, words per cycle</h3>
+          <div class="scroll"><table>
+            <thead><tr><th>Test</th>{% for o in range(4) %}<th>out{{ o }}</th>{% endfor %}</tr></thead>
+            <tbody>{% for t, v in tput.items() %}<tr><td class="mono">{{ t }}</td>
+              {% for x in v %}<td><span class="tp"><span class="share"><i style="width: {{ 100 * x }}%"></i></span><span class="mono">{{ '%.2f'|format(x) }}</span></span></td>{% endfor %}</tr>{% endfor %}</tbody>
+          </table></div>
+          <p class="caption">Mean over each test's runs; full length is 1 word per cycle, the router's line rate.</p>
+        </div>
+        <div>
+          <h3>Latency, cycles from input eop to output sop</h3>
+          {% if latency_svg %}{{ latency_svg|safe }}{% else %}<p class="caption">No packet reached the scoreboard as a match in this run, so there is no latency to plot.</p>{% endif %}
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+</body>
+</html>

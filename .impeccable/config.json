@@ -1,0 +1,80 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "repeating-stripes-gradient",
+        "value": "*",
+        "files": [
+          "scripts/templates/dashboard.html.j2"
+        ],
+        "createdAt": "2026-11-10T20:39:43.076Z",
+        "reason": "Claude: hatching marks zero-hit heat cells so the hole state reads by pattern, not hue alone (direction contract raise)"
+      },
+      {
+        "rule": "repeating-stripes-gradient",
+        "value": "*",
+        "files": [
+          "out/full/dashboard/index.html"
+        ],
+        "createdAt": "2026-11-10T20:39:43.371Z",
+        "reason": "Claude: generated from the template; hatching marks zero-hit cells"
+      },
+      {
+        "rule": "cramped-padding",
+        "value": "*",
+        "files": [
+          "out/*/dashboard/index.html"
+        ],
+        "createdAt": "2026-11-10T20:40:00.238Z",
+        "reason": "Claude: Release Drawing world; the sheet is a ruled drawing frame whose child zones carry their own 20-28px padding"
+      },
+      {
+        "rule": "repeating-stripes-gradient",
+        "value": "*",
+        "files": [
+          "out/*/dashboard/index.html"
+        ],
+        "createdAt": "2026-11-10T20:40:00.543Z",
+        "reason": "Claude: hatching marks zero-hit heat cells so the hole state reads by pattern, not hue alone"
+      },
+      {
+        "rule": "undersized-ui-text",
+        "value": "*",
+        "files": [
+          ".impeccable/mocks/decision/*.html"
+        ],
+        "createdAt": "2026-11-10T20:42:50.679Z",
+        "reason": "Claude: decision-round sketches only (spent first-viewport thumbnails, not shipped); the built dashboard passes this rule"
+      },
+      {
+        "rule": "tiny-text",
+        "value": "*",
+        "files": [
+          ".impeccable/mocks/decision/*.html"
+        ],
+        "createdAt": "2026-11-10T20:42:50.900Z",
+        "reason": "Claude: decision-round sketches only, not shipped"
+      },
+      {
+        "rule": "overused-font",
+        "value": "*",
+        "files": [
+          ".impeccable/mocks/decision/*.html"
+        ],
+        "createdAt": "2026-11-10T20:42:57.700Z",
+        "reason": "Claude: unchosen decision sketch (datasheet pick card), not shipped"
+      },
+      {
+        "rule": "design-system-font",
+        "value": "*",
+        "files": [
+          ".impeccable/mocks/decision/*.html"
+        ],
+        "createdAt": "2026-11-11T06:52:49.619Z",
+        "reason": "Claude: unchosen decision-round sketch (datasheet pick card), not shipped; DESIGN.md governs the built dashboard"
+      }
+    ]
+  }
+}
